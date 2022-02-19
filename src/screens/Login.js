@@ -3,7 +3,6 @@ import React from 'react';
 import { Button, TextInput, View } from 'react-native';
 import auth from '../api/auth';
 
-
 class Login extends React.Component {
 
   constructor(props) {
@@ -25,8 +24,7 @@ class Login extends React.Component {
   handleLogin = () => {
     const { username, password } = this.state
     auth.login(username, password).then(token => {
-      console.log("login succeed", token)
-      const { setAuthToken } = this.props.store.AuthStore
+      const { setAuthToken } = this.props.AuthStore
       setAuthToken(token)
     }).catch(err => {
       console.log("login ", err)
@@ -44,4 +42,4 @@ class Login extends React.Component {
   }
 }
 
-export default inject("store")(observer(Login));
+export default inject("AuthStore")(observer(Login));

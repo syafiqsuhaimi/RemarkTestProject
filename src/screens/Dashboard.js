@@ -13,13 +13,20 @@ class Dashboard extends React.Component {
 
   componentDidMount() {
     movie.getMovies()
-      .then(movies => this.setState({ movies }))
+      .then(res => this.setState({ movies: res.data.Search }))
       .catch(err => console.log("fetch movies error", err))
   }
 
   render() {
     const { movies } = this.state
-    if (movies.length === 0) return <View><Text>No movies</Text></View>
+
+    if (movies.length === 0)
+      return (
+        <View style={styles.emptyContainer}>
+          <Text style={styles.infoText}>No movies available for you right now</Text>
+        </View>
+      )
+
     return (
       <ScrollView>
         {movies.map(movie => {
@@ -41,6 +48,14 @@ class Dashboard extends React.Component {
 }
 
 const styles = StyleSheet.create({
+  emptyContainer: {
+    marginTop: 40,
+    display: "flex",
+    alignItems: "center"
+  },
+  infoText: {
+    textAlign: "center"
+  },
   row: {
     display: "flex",
     flexDirection: "row",

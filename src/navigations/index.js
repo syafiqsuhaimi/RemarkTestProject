@@ -4,19 +4,27 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { inject, observer } from "mobx-react";
 import Login from '../screens/Login';
 import Dashboard from '../screens/Dashboard';
-import { AsyncStorage, Button } from 'react-native';
+import { Button, Dimensions, StyleSheet, Text, View } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
 class Navigator extends React.Component {
 
-  async componentDidMount() {
-    authToken = AsyncStorage.getItem("authToken");
+  handleLogout = () => {
+    const { setAuthToken } = this.props.AuthStore
+    setAuthToken("")
   }
 
   render() {
-    const { authToken } = this.props.store.AuthStore
-    console.log("token ", authToken)
+    const { authToken, isHydrated } = this.props.AuthStore
+
+    if (!isHydrated)
+      return (
+        <View style={styles.splashContainer}>
+          <Text style={styles.splashText}>Remark Malaysia Splash</Text>
+        </View>
+      )
+
     return (
       <NavigationContainer>
         <Stack.Navigator>
@@ -30,9 +38,7 @@ class Navigator extends React.Component {
                 headerRight: (props) => (
                   <Button
                     title="Logout"
-                    onPress={() => {
-                      // Log out
-                    }}
+                    onPress={this.handleLogout}
                   />
                 ),
               }} />
@@ -43,4 +49,18 @@ class Navigator extends React.Component {
   }
 }
 
-export default inject("store")(observer(Navigator));
+const styles = StyleSheet.create({
+  splashContainer: {
+    height: Dimensions.get("window").height,
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center"
+  },
+  splashText: {
+    fontSize: 20,
+    fontWeight: "bold",
+    color: "black"
+  }
+})
+
+export default inject("AuthStore")(observer(Navigator));
